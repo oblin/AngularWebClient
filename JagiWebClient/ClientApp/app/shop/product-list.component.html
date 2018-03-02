@@ -1,0 +1,7 @@
+<div class="row">
+    <div class="col-md-4 well well-sm" *ngFor="let p of products">
+        <div><strong>{{ p.Title }}</strong></div>
+        <div><strong>{{ p.Price | currency: "TWD" }}</strong></div>
+        <button class="btn btn-success btn-sm pull-right" (click)="addProduct(p)">Buy</button>
+    </div>
+</div>
