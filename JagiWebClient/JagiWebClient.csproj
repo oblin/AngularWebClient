@@ -18,8 +18,4 @@
     <ProjectReference Include="..\..\..\repos\JagiCore\src\JagiCore\JagiCore.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ClientApp\app\shop\" />
-  </ItemGroup>
-
 </Project>

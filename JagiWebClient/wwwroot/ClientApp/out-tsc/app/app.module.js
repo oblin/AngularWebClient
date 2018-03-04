@@ -18,6 +18,7 @@ var cart_component_1 = require("./shop/cart.component");
 var shop_component_1 = require("./shop/shop.component");
 var checkout_component_1 = require("./checkout/checkout.component");
 var login_component_1 = require("./login/login.component");
+var product_component_1 = require("./shop/product.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -29,7 +30,8 @@ var AppModule = /** @class */ (function () {
                 cart_component_1.CartComponent,
                 shop_component_1.ShopComponent,
                 checkout_component_1.CheckoutComponent,
-                login_component_1.LoginComponent
+                login_component_1.LoginComponent,
+                product_component_1.ProductComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,

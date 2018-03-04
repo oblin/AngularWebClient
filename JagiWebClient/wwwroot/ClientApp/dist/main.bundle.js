@@ -34,10 +34,12 @@ var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.j
 var shop_component_1 = __webpack_require__("./ClientApp/app/shop/shop.component.ts");
 var checkout_component_1 = __webpack_require__("./ClientApp/app/checkout/checkout.component.ts");
 var login_component_1 = __webpack_require__("./ClientApp/app/login/login.component.ts");
+var product_component_1 = __webpack_require__("./ClientApp/app/shop/product.component.ts");
 var routes = [
     { path: '', component: shop_component_1.ShopComponent },
     { path: 'checkout', component: checkout_component_1.CheckoutComponent },
-    { path: 'login', component: login_component_1.LoginComponent }
+    { path: 'login', component: login_component_1.LoginComponent },
+    { path: 'product', component: product_component_1.ProductComponent }
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {
@@ -104,21 +106,39 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 var platform_browser_1 = __webpack_require__("./node_modules/@angular/platform-browser/esm5/platform-browser.js");
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+var modal_1 = __webpack_require__("./node_modules/ngx-bootstrap/modal/index.js");
+var datepicker_1 = __webpack_require__("./node_modules/ngx-bootstrap/datepicker/index.js");
+var tooltip_1 = __webpack_require__("./node_modules/ngx-bootstrap/tooltip/index.js");
+var chronos_1 = __webpack_require__("./node_modules/ngx-bootstrap/chronos/index.js");
+var locale_1 = __webpack_require__("./node_modules/ngx-bootstrap/locale.js");
+chronos_1.defineLocale('zh-cn', locale_1.zhCnLocale);
 var app_routing_module_1 = __webpack_require__("./ClientApp/app/app-routing.module.ts");
 var app_component_1 = __webpack_require__("./ClientApp/app/app.component.ts");
 var product_list_component_1 = __webpack_require__("./ClientApp/app/shop/product-list.component.ts");
-var data_service_1 = __webpack_require__("./ClientApp/app/shared/data.service.ts");
 var cart_component_1 = __webpack_require__("./ClientApp/app/shop/cart.component.ts");
 var shop_component_1 = __webpack_require__("./ClientApp/app/shop/shop.component.ts");
 var checkout_component_1 = __webpack_require__("./ClientApp/app/checkout/checkout.component.ts");
 var login_component_1 = __webpack_require__("./ClientApp/app/login/login.component.ts");
+var product_component_1 = __webpack_require__("./ClientApp/app/shop/product.component.ts");
+var faicon_directive_1 = __webpack_require__("./ClientApp/app/core/faicon.directive.ts");
+var form_group_component_1 = __webpack_require__("./ClientApp/app/core/form-group.component.ts");
+var validate_span_component_1 = __webpack_require__("./ClientApp/app/core/validate-span.component.ts");
+var confirm_component_1 = __webpack_require__("./ClientApp/app/core/confirm.component.ts");
+// Services
+var data_service_1 = __webpack_require__("./ClientApp/app/shared/data.service.ts");
+var globals_service_1 = __webpack_require__("./ClientApp/app/core/globals.service.ts");
 var AppModule = /** @class */ (function () {
-    function AppModule() {
+    function AppModule(localeService) {
+        this.localeService = localeService;
+        localeService.use("zh-cn");
     }
     AppModule = __decorate([
         core_1.NgModule({
@@ -128,17 +148,27 @@ var AppModule = /** @class */ (function () {
                 cart_component_1.CartComponent,
                 shop_component_1.ShopComponent,
                 checkout_component_1.CheckoutComponent,
-                login_component_1.LoginComponent
+                login_component_1.LoginComponent,
+                product_component_1.ProductComponent,
+                faicon_directive_1.FaIconDirective,
+                form_group_component_1.FormGroupComponent,
+                validate_span_component_1.ValidateSpanComponent,
+                confirm_component_1.ConfirmComponent
             ],
             imports: [
                 platform_browser_1.BrowserModule,
                 http_1.HttpClientModule,
                 forms_1.FormsModule,
-                app_routing_module_1.AppRoutingModule
+                app_routing_module_1.AppRoutingModule,
+                modal_1.ModalModule.forRoot(),
+                datepicker_1.BsDatepickerModule.forRoot(),
+                tooltip_1.TooltipModule.forRoot()
             ],
-            providers: [data_service_1.DataService],
+            providers: [data_service_1.DataService, globals_service_1.Globals],
+            entryComponents: [confirm_component_1.ConfirmComponent],
             bootstrap: [app_component_1.AppComponent]
-        })
+        }),
+        __metadata("design:paramtypes", [datepicker_1.BsLocaleService])
     ], AppModule);
     return AppModule;
 }());
@@ -198,6 +228,306 @@ var CheckoutComponent = /** @class */ (function () {
     return CheckoutComponent;
 }());
 exports.CheckoutComponent = CheckoutComponent;
+
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/confirm.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"modal-header\">\r\n    <h4 class=\"modal-title pull-left\">{{title}}</h4>\r\n    <button type=\"button\" class=\"close pull-right\" aria-label=\"Close\" (click)=\"bsModalRef.hide()\">\r\n        <span aria-hidden=\"true\">&times;</span>\r\n    </button>\r\n</div>\r\n<div class=\"modal-body\">\r\n    <h3>{{description}}</h3>\r\n</div>\r\n<div class=\"modal-footer\">\r\n    <button type=\"button\" class=\"btn btn-default\" (click)=\"confirm()\">確認</button>\r\n    <button type=\"button\" class=\"btn btn-default\" (click)=\"bsModalRef.hide()\">{{closeBtnName}}</button>\r\n</div> "
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/confirm.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var modal_1 = __webpack_require__("./node_modules/ngx-bootstrap/modal/index.js");
+/**
+ * ������ܽT�{���u�������A
+ * �ϥΤ覡�G
+     confirmDelete() {
+        const initialState = {
+            title: "�T�{�R��",
+            description: "�нT�{�O�_�R��",
+            action: this.deleting // callback method
+        };
+        this.modalRef = this.modalService.show(ConfirmComponent, { initialState });
+    }
+ */
+var ConfirmComponent = /** @class */ (function () {
+    function ConfirmComponent(bsModalRef) {
+        this.bsModalRef = bsModalRef;
+        this.title = "�T�{����";
+        this.description = "Are your sure wanna deleted?";
+        this.closeBtnName = "����";
+        this.action = function () { };
+    }
+    ConfirmComponent.prototype.confirm = function () {
+        this.action();
+        this.bsModalRef.hide();
+    };
+    ConfirmComponent.prototype.ngOnInit = function () {
+    };
+    ConfirmComponent = __decorate([
+        core_1.Component({
+            selector: 'confirm',
+            template: __webpack_require__("./ClientApp/app/core/confirm.component.html"),
+            styles: []
+        }),
+        __metadata("design:paramtypes", [modal_1.BsModalRef])
+    ], ConfirmComponent);
+    return ConfirmComponent;
+}());
+exports.ConfirmComponent = ConfirmComponent;
+
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/faicon.directive.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var FaIconDirective = /** @class */ (function () {
+    function FaIconDirective(el) {
+        this.el = el;
+        el.nativeElement.innerHtml = "<i class='fa " + this.faIcon + "'></i>";
+    }
+    FaIconDirective.prototype.ngOnInit = function () {
+        this.el.nativeElement.innerHTML += "<i class='fa " + this.faIcon + "'></i>";
+    };
+    __decorate([
+        core_1.Input('faIcon'),
+        __metadata("design:type", String)
+    ], FaIconDirective.prototype, "faIcon", void 0);
+    FaIconDirective = __decorate([
+        core_1.Directive({
+            selector: '[faIcon]'
+        }),
+        __metadata("design:paramtypes", [core_1.ElementRef])
+    ], FaIconDirective);
+    return FaIconDirective;
+}());
+exports.FaIconDirective = FaIconDirective;
+
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/form-group.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"form-group has-feedback {{required ? 'required' : ''}} col-sm-{{width}}\"\r\n                 [ngClass]=\"controlVariable.dirty ?\r\n                (controlVariable.valid ? 'has-success' : 'has-error') :\r\n                (controlVariable.valid ? '' : 'has-warning')\"\r\n     [tooltip]=\"controlVariable.valid ? null : errorMessage\"        \r\n     >\r\n    <ng-content></ng-content>\r\n</div>"
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/form-group.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+var FormGroupComponent = /** @class */ (function () {
+    function FormGroupComponent() {
+        this.errorMessage = "��J��Ʀ����~�A�Э��s��J";
+    }
+    FormGroupComponent.prototype.ngOnInit = function () {
+        if (this.controlVariable.errors) {
+            if (this.controlVariable.errors.required)
+                this.errorMessage = "This field is required";
+        }
+        //throw new Error("Method not implemented.");
+    };
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Number)
+    ], FormGroupComponent.prototype, "width", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", forms_1.AbstractControlDirective)
+    ], FormGroupComponent.prototype, "controlVariable", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Boolean)
+    ], FormGroupComponent.prototype, "required", void 0);
+    FormGroupComponent = __decorate([
+        core_1.Component({
+            selector: 'form-group',
+            template: __webpack_require__("./ClientApp/app/core/form-group.component.html"),
+            styles: []
+        })
+    ], FormGroupComponent);
+    return FormGroupComponent;
+}());
+exports.FormGroupComponent = FormGroupComponent;
+
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/globals.service.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var moment = __webpack_require__("./node_modules/moment/moment.js");
+var Globals = /** @class */ (function () {
+    function Globals() {
+        this.dateFormat = "YYYY/MM/DD";
+    }
+    Globals.prototype.dateFormatter = function (s) {
+        if (s == null)
+            return "";
+        if (s.length == 0 || s.length < 6)
+            return "";
+        if (s.length == 6) {
+            var result = this.dealSlashDate(s);
+            if (result.length == 10)
+                return result;
+            // �B�z 990101
+            s = '0' + s;
+        }
+        if (s.length == 7) {
+            var result = this.dealSlashDate(s);
+            if (result.length == 10)
+                return result;
+            // �B�z 0990101 or 1031201
+            var y = parseInt(s.substr(0, 3), 10) + 1911;
+            var m = parseInt(s.substr(3, 2), 10);
+            var d = parseInt(s.substr(5, 2), 10);
+            var date = y + "/" + m + "/" + d;
+            //if (moment(date).isValid()) {
+            //    var returnDate = moment(date).format(dateFormat);
+            //    var stringDate = returnDate.toString();
+            //    return stringDate;
+            //}
+            //else
+            //    return "";
+            return this.getDateString(date);
+        }
+        if (s.length == 8 || s.length == 9) {
+            var result = this.dealSlashDate(s);
+            if (result.length == 10)
+                return result;
+        }
+        return this.getDateString(s);
+    };
+    Globals.prototype.dealSlashDate = function (s) {
+        if (s.indexOf('/') > -1) {
+            var array = s.split('/');
+            if (array.length == 3) {
+                var y = parseInt(array[0]) + 1911;
+                var m = parseInt(array[1], 10);
+                var d = parseInt(array[2], 10);
+                var date = y + "/" + m + "/" + d;
+                return this.getDateString(date);
+            }
+        }
+        return s;
+    };
+    Globals.prototype.getDateString = function (s) {
+        if (moment(s).isValid()) {
+            var returnDate = moment(s).format(this.dateFormat);
+            var stringDate = returnDate.toString();
+            return stringDate;
+        }
+        else {
+            return "";
+        }
+    };
+    Globals = __decorate([
+        core_1.Injectable()
+    ], Globals);
+    return Globals;
+}());
+exports.Globals = Globals;
+
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/validate-span.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<span class=\"glyphicon form-control-feedback\" aria-hidden=\"true\"\r\n      [hidden]=\"controlVariable.pristine || controlVariable.untouched\"\r\n      [ngClass]=\"{'glyphicon-ok': controlVariable.valid, 'glyphicon-remove': !controlVariable.valid}\">\r\n</span>"
+
+/***/ }),
+
+/***/ "./ClientApp/app/core/validate-span.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+var ValidateSpanComponent = /** @class */ (function () {
+    function ValidateSpanComponent() {
+    }
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", forms_1.AbstractControlDirective)
+    ], ValidateSpanComponent.prototype, "controlVariable", void 0);
+    ValidateSpanComponent = __decorate([
+        core_1.Component({
+            selector: 'validate-span',
+            template: __webpack_require__("./ClientApp/app/core/validate-span.component.html"),
+            styles: ['[hidden] { display: none !important; }']
+        })
+    ], ValidateSpanComponent);
+    return ValidateSpanComponent;
+}());
+exports.ValidateSpanComponent = ValidateSpanComponent;
 
 
 /***/ }),
@@ -442,7 +772,7 @@ exports.CartComponent = CartComponent;
 /***/ "./ClientApp/app/shop/product-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\r\n    <div class=\"col-md-4 well well-sm\" *ngFor=\"let p of products\">\r\n        <div><strong>{{ p.Title }}</strong></div>\r\n        <div><strong>{{ p.Price | currency: \"TWD\" }}</strong></div>\r\n        <button class=\"btn btn-success btn-sm pull-right\" (click)=\"addProduct(p)\">Buy</button>\r\n    </div>\r\n</div>"
+module.exports = "<a routerLink=\"product\" class=\"btn btn-info\">Add New Product</a>\r\n<div class=\"row\">\r\n    <div class=\"col-md-4 well well-sm\" *ngFor=\"let p of products\">\r\n        <div><strong>{{ p.Title }}</strong></div>\r\n        <div><strong>{{ p.Price | currency: \"TWD\" }}</strong></div>\r\n        <button class=\"btn btn-success btn-sm pull-right\" (click)=\"addProduct(p)\">Buy</button>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -488,6 +818,79 @@ var ProductListComponent = /** @class */ (function () {
     return ProductListComponent;
 }());
 exports.ProductListComponent = ProductListComponent;
+
+
+/***/ }),
+
+/***/ "./ClientApp/app/shop/product.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<p>\r\n    product works!\r\n</p>\r\n\r\n<form #form=\"ngForm\" (submit)=\"submitForm(form)\" class=\"form-horizontal\" novalidate>\r\n    <p>\r\n        <button class=\"btn btn-primary\" type=\"submit\"\r\n                [disabled]=\"form.$pristine || form.$invalid\" [faIcon]=\"'fa-save'\">\r\n            存檔\r\n        </button>\r\n        <button class=\"btn btn-danger\" type=\"button\" (click)=\"confirmDelete('請確認是否刪除')\" [faIcon]=\"'fa-trash'\">\r\n            刪除 <!-- 同一段 html 不可以有兩個 directives，這裡已經使用 confirmComponent 因此就不能使用 iconComponent -->\r\n        </button>\r\n        <button class=\"btn btn-warning\" (click)=\"cancel(form)\" type=\"button\" [faIcon]=\"'fa-undo'\">\r\n            取消\r\n        </button>\r\n    </p>\r\n    <div class=\"row\">\r\n        <form-group [width]=\"4\" [controlVariable]=\"id\" [required]=\"true\">\r\n            <label class=\"control-label col-sm-6\" for=\"id\">Id</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"number\" id=\"id\" name=\"Id\" class=\"form-control\"\r\n                       #id=\"ngModel\" required\r\n                       [(ngModel)]=\"model.Id\" />\r\n                <validate-span [controlVariable]=\"id\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"title\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"title\">Title</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"text\" id=\"title\" name=\"Title\" class=\"form-control\"\r\n                       #title=\"ngModel\"\r\n                       [(ngModel)]=\"model.Title\" />\r\n                <validate-span [controlVariable]=\"title\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"price\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"price\">Price</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"number\" id=\"price\" name=\"Price\" class=\"form-control\"\r\n                       #price=\"ngModel\"\r\n                       [(ngModel)]=\"model.Price\" />\r\n                <validate-span [controlVariable]=\"price\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n    </div>\r\n    <div class=\"row\">\r\n        <form-group [width]=\"4\" [controlVariable]=\"importDate\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"importDate\">ImportDate</label>\r\n            <div class=\"col-sm-6\">\r\n                <div class=\"input-group\">\r\n                    <input id=\"importDate\" name=\"ImportDate\" class=\"form-control\" type=\"text\"\r\n                           #importDate=\"ngModel\" bsDatepicker #dpImportDate=\"bsDatepicker\"\r\n                           [ngModel]=\"model.ImportDate\" (ngModelChange)=\"model.ImportDate = dateFormat($event)\" />\r\n                    <span class=\"input-group-btn\">\r\n                        <button type=\"button\" class=\"btn btn-default\" (click)=\"dpImportDate.toggle()\"><i class=\"glyphicon glyphicon-calendar\"></i></button>\r\n                    </span>\r\n                </div>\r\n                <validate-span [controlVariable]=\"importDate\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"exportDate\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"exportDate\">ExportDate</label>\r\n            <div class=\"col-sm-6\">\r\n                <div class=\"input-group\">\r\n                    <input id=\"exportDate\" name=\"ExportDate\" class=\"form-control\" type=\"text\"\r\n                           #exportDate=\"ngModel\" bsDatepicker #dpExportDate=\"bsDatepicker\"\r\n                           [ngModel]=\"model.ExportDate\" (ngModelChange)=\"model.ExportDate = dateFormat($event)\" />\r\n                    <span class=\"input-group-btn\">\r\n                        <button type=\"button\" class=\"btn btn-default\" (click)=\"dpExportDate.toggle()\"><i class=\"glyphicon glyphicon-calendar\"></i></button>\r\n                    </span>\r\n                </div>\r\n                <validate-span [controlVariable]=\"exportDate\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n    </div>\r\n</form>\r\n"
+
+/***/ }),
+
+/***/ "./ClientApp/app/shop/product.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var Order_1 = __webpack_require__("./ClientApp/app/shared/Order.ts");
+var modal_1 = __webpack_require__("./node_modules/ngx-bootstrap/modal/index.js");
+var confirm_component_1 = __webpack_require__("./ClientApp/app/core/confirm.component.ts");
+var globals_service_1 = __webpack_require__("./ClientApp/app/core/globals.service.ts");
+var ProductComponent = /** @class */ (function () {
+    function ProductComponent(modalService, globals) {
+        this.modalService = modalService;
+        this.globals = globals;
+    }
+    ProductComponent.prototype.ngOnInit = function () {
+        this.model = new Order_1.Product();
+    };
+    ProductComponent.prototype.deleting = function () {
+        alert("Call deleting function");
+    };
+    ProductComponent.prototype.confirmDelete = function (message) {
+        var initialState = {
+            action: this.deleting
+        };
+        if (message)
+            initialState.description = message;
+        this.modalRef = this.modalService.show(confirm_component_1.ConfirmComponent, { initialState: initialState });
+    };
+    /**
+     * �N��N������榡�]�]�t����~�^�ন yyyy/MM/dd
+     * @param date �i�H�O����~�G 85/01/23
+     */
+    ProductComponent.prototype.dateFormat = function (date) {
+        return this.globals.dateFormatter(date);
+    };
+    ProductComponent.prototype.submitForm = function (form) {
+        if (form.valid) {
+            alert(JSON.stringify(this.model));
+        }
+    };
+    ProductComponent = __decorate([
+        core_1.Component({
+            selector: 'product',
+            template: __webpack_require__("./ClientApp/app/shop/product.component.html"),
+            styles: []
+        }),
+        __metadata("design:paramtypes", [modal_1.BsModalService, globals_service_1.Globals])
+    ], ProductComponent);
+    return ProductComponent;
+}());
+exports.ProductComponent = ProductComponent;
 
 
 /***/ }),
@@ -568,6 +971,273 @@ if (environment_1.environment.production) {
 platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule)
     .catch(function (err) { return console.log(err); });
 
+
+/***/ }),
+
+/***/ "./node_modules/moment/locale recursive ^\\.\\/.*$":
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": "./node_modules/moment/locale/af.js",
+	"./af.js": "./node_modules/moment/locale/af.js",
+	"./ar": "./node_modules/moment/locale/ar.js",
+	"./ar-dz": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-dz.js": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-kw": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-kw.js": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-ly": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ly.js": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ma": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-ma.js": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-sa": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-sa.js": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-tn": "./node_modules/moment/locale/ar-tn.js",
+	"./ar-tn.js": "./node_modules/moment/locale/ar-tn.js",
+	"./ar.js": "./node_modules/moment/locale/ar.js",
+	"./az": "./node_modules/moment/locale/az.js",
+	"./az.js": "./node_modules/moment/locale/az.js",
+	"./be": "./node_modules/moment/locale/be.js",
+	"./be.js": "./node_modules/moment/locale/be.js",
+	"./bg": "./node_modules/moment/locale/bg.js",
+	"./bg.js": "./node_modules/moment/locale/bg.js",
+	"./bm": "./node_modules/moment/locale/bm.js",
+	"./bm.js": "./node_modules/moment/locale/bm.js",
+	"./bn": "./node_modules/moment/locale/bn.js",
+	"./bn.js": "./node_modules/moment/locale/bn.js",
+	"./bo": "./node_modules/moment/locale/bo.js",
+	"./bo.js": "./node_modules/moment/locale/bo.js",
+	"./br": "./node_modules/moment/locale/br.js",
+	"./br.js": "./node_modules/moment/locale/br.js",
+	"./bs": "./node_modules/moment/locale/bs.js",
+	"./bs.js": "./node_modules/moment/locale/bs.js",
+	"./ca": "./node_modules/moment/locale/ca.js",
+	"./ca.js": "./node_modules/moment/locale/ca.js",
+	"./cs": "./node_modules/moment/locale/cs.js",
+	"./cs.js": "./node_modules/moment/locale/cs.js",
+	"./cv": "./node_modules/moment/locale/cv.js",
+	"./cv.js": "./node_modules/moment/locale/cv.js",
+	"./cy": "./node_modules/moment/locale/cy.js",
+	"./cy.js": "./node_modules/moment/locale/cy.js",
+	"./da": "./node_modules/moment/locale/da.js",
+	"./da.js": "./node_modules/moment/locale/da.js",
+	"./de": "./node_modules/moment/locale/de.js",
+	"./de-at": "./node_modules/moment/locale/de-at.js",
+	"./de-at.js": "./node_modules/moment/locale/de-at.js",
+	"./de-ch": "./node_modules/moment/locale/de-ch.js",
+	"./de-ch.js": "./node_modules/moment/locale/de-ch.js",
+	"./de.js": "./node_modules/moment/locale/de.js",
+	"./dv": "./node_modules/moment/locale/dv.js",
+	"./dv.js": "./node_modules/moment/locale/dv.js",
+	"./el": "./node_modules/moment/locale/el.js",
+	"./el.js": "./node_modules/moment/locale/el.js",
+	"./en-au": "./node_modules/moment/locale/en-au.js",
+	"./en-au.js": "./node_modules/moment/locale/en-au.js",
+	"./en-ca": "./node_modules/moment/locale/en-ca.js",
+	"./en-ca.js": "./node_modules/moment/locale/en-ca.js",
+	"./en-gb": "./node_modules/moment/locale/en-gb.js",
+	"./en-gb.js": "./node_modules/moment/locale/en-gb.js",
+	"./en-ie": "./node_modules/moment/locale/en-ie.js",
+	"./en-ie.js": "./node_modules/moment/locale/en-ie.js",
+	"./en-il": "./node_modules/moment/locale/en-il.js",
+	"./en-il.js": "./node_modules/moment/locale/en-il.js",
+	"./en-nz": "./node_modules/moment/locale/en-nz.js",
+	"./en-nz.js": "./node_modules/moment/locale/en-nz.js",
+	"./eo": "./node_modules/moment/locale/eo.js",
+	"./eo.js": "./node_modules/moment/locale/eo.js",
+	"./es": "./node_modules/moment/locale/es.js",
+	"./es-do": "./node_modules/moment/locale/es-do.js",
+	"./es-do.js": "./node_modules/moment/locale/es-do.js",
+	"./es-us": "./node_modules/moment/locale/es-us.js",
+	"./es-us.js": "./node_modules/moment/locale/es-us.js",
+	"./es.js": "./node_modules/moment/locale/es.js",
+	"./et": "./node_modules/moment/locale/et.js",
+	"./et.js": "./node_modules/moment/locale/et.js",
+	"./eu": "./node_modules/moment/locale/eu.js",
+	"./eu.js": "./node_modules/moment/locale/eu.js",
+	"./fa": "./node_modules/moment/locale/fa.js",
+	"./fa.js": "./node_modules/moment/locale/fa.js",
+	"./fi": "./node_modules/moment/locale/fi.js",
+	"./fi.js": "./node_modules/moment/locale/fi.js",
+	"./fo": "./node_modules/moment/locale/fo.js",
+	"./fo.js": "./node_modules/moment/locale/fo.js",
+	"./fr": "./node_modules/moment/locale/fr.js",
+	"./fr-ca": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ca.js": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ch": "./node_modules/moment/locale/fr-ch.js",
+	"./fr-ch.js": "./node_modules/moment/locale/fr-ch.js",
+	"./fr.js": "./node_modules/moment/locale/fr.js",
+	"./fy": "./node_modules/moment/locale/fy.js",
+	"./fy.js": "./node_modules/moment/locale/fy.js",
+	"./gd": "./node_modules/moment/locale/gd.js",
+	"./gd.js": "./node_modules/moment/locale/gd.js",
+	"./gl": "./node_modules/moment/locale/gl.js",
+	"./gl.js": "./node_modules/moment/locale/gl.js",
+	"./gom-latn": "./node_modules/moment/locale/gom-latn.js",
+	"./gom-latn.js": "./node_modules/moment/locale/gom-latn.js",
+	"./gu": "./node_modules/moment/locale/gu.js",
+	"./gu.js": "./node_modules/moment/locale/gu.js",
+	"./he": "./node_modules/moment/locale/he.js",
+	"./he.js": "./node_modules/moment/locale/he.js",
+	"./hi": "./node_modules/moment/locale/hi.js",
+	"./hi.js": "./node_modules/moment/locale/hi.js",
+	"./hr": "./node_modules/moment/locale/hr.js",
+	"./hr.js": "./node_modules/moment/locale/hr.js",
+	"./hu": "./node_modules/moment/locale/hu.js",
+	"./hu.js": "./node_modules/moment/locale/hu.js",
+	"./hy-am": "./node_modules/moment/locale/hy-am.js",
+	"./hy-am.js": "./node_modules/moment/locale/hy-am.js",
+	"./id": "./node_modules/moment/locale/id.js",
+	"./id.js": "./node_modules/moment/locale/id.js",
+	"./is": "./node_modules/moment/locale/is.js",
+	"./is.js": "./node_modules/moment/locale/is.js",
+	"./it": "./node_modules/moment/locale/it.js",
+	"./it.js": "./node_modules/moment/locale/it.js",
+	"./ja": "./node_modules/moment/locale/ja.js",
+	"./ja.js": "./node_modules/moment/locale/ja.js",
+	"./jv": "./node_modules/moment/locale/jv.js",
+	"./jv.js": "./node_modules/moment/locale/jv.js",
+	"./ka": "./node_modules/moment/locale/ka.js",
+	"./ka.js": "./node_modules/moment/locale/ka.js",
+	"./kk": "./node_modules/moment/locale/kk.js",
+	"./kk.js": "./node_modules/moment/locale/kk.js",
+	"./km": "./node_modules/moment/locale/km.js",
+	"./km.js": "./node_modules/moment/locale/km.js",
+	"./kn": "./node_modules/moment/locale/kn.js",
+	"./kn.js": "./node_modules/moment/locale/kn.js",
+	"./ko": "./node_modules/moment/locale/ko.js",
+	"./ko.js": "./node_modules/moment/locale/ko.js",
+	"./ky": "./node_modules/moment/locale/ky.js",
+	"./ky.js": "./node_modules/moment/locale/ky.js",
+	"./lb": "./node_modules/moment/locale/lb.js",
+	"./lb.js": "./node_modules/moment/locale/lb.js",
+	"./lo": "./node_modules/moment/locale/lo.js",
+	"./lo.js": "./node_modules/moment/locale/lo.js",
+	"./lt": "./node_modules/moment/locale/lt.js",
+	"./lt.js": "./node_modules/moment/locale/lt.js",
+	"./lv": "./node_modules/moment/locale/lv.js",
+	"./lv.js": "./node_modules/moment/locale/lv.js",
+	"./me": "./node_modules/moment/locale/me.js",
+	"./me.js": "./node_modules/moment/locale/me.js",
+	"./mi": "./node_modules/moment/locale/mi.js",
+	"./mi.js": "./node_modules/moment/locale/mi.js",
+	"./mk": "./node_modules/moment/locale/mk.js",
+	"./mk.js": "./node_modules/moment/locale/mk.js",
+	"./ml": "./node_modules/moment/locale/ml.js",
+	"./ml.js": "./node_modules/moment/locale/ml.js",
+	"./mr": "./node_modules/moment/locale/mr.js",
+	"./mr.js": "./node_modules/moment/locale/mr.js",
+	"./ms": "./node_modules/moment/locale/ms.js",
+	"./ms-my": "./node_modules/moment/locale/ms-my.js",
+	"./ms-my.js": "./node_modules/moment/locale/ms-my.js",
+	"./ms.js": "./node_modules/moment/locale/ms.js",
+	"./mt": "./node_modules/moment/locale/mt.js",
+	"./mt.js": "./node_modules/moment/locale/mt.js",
+	"./my": "./node_modules/moment/locale/my.js",
+	"./my.js": "./node_modules/moment/locale/my.js",
+	"./nb": "./node_modules/moment/locale/nb.js",
+	"./nb.js": "./node_modules/moment/locale/nb.js",
+	"./ne": "./node_modules/moment/locale/ne.js",
+	"./ne.js": "./node_modules/moment/locale/ne.js",
+	"./nl": "./node_modules/moment/locale/nl.js",
+	"./nl-be": "./node_modules/moment/locale/nl-be.js",
+	"./nl-be.js": "./node_modules/moment/locale/nl-be.js",
+	"./nl.js": "./node_modules/moment/locale/nl.js",
+	"./nn": "./node_modules/moment/locale/nn.js",
+	"./nn.js": "./node_modules/moment/locale/nn.js",
+	"./pa-in": "./node_modules/moment/locale/pa-in.js",
+	"./pa-in.js": "./node_modules/moment/locale/pa-in.js",
+	"./pl": "./node_modules/moment/locale/pl.js",
+	"./pl.js": "./node_modules/moment/locale/pl.js",
+	"./pt": "./node_modules/moment/locale/pt.js",
+	"./pt-br": "./node_modules/moment/locale/pt-br.js",
+	"./pt-br.js": "./node_modules/moment/locale/pt-br.js",
+	"./pt.js": "./node_modules/moment/locale/pt.js",
+	"./ro": "./node_modules/moment/locale/ro.js",
+	"./ro.js": "./node_modules/moment/locale/ro.js",
+	"./ru": "./node_modules/moment/locale/ru.js",
+	"./ru.js": "./node_modules/moment/locale/ru.js",
+	"./sd": "./node_modules/moment/locale/sd.js",
+	"./sd.js": "./node_modules/moment/locale/sd.js",
+	"./se": "./node_modules/moment/locale/se.js",
+	"./se.js": "./node_modules/moment/locale/se.js",
+	"./si": "./node_modules/moment/locale/si.js",
+	"./si.js": "./node_modules/moment/locale/si.js",
+	"./sk": "./node_modules/moment/locale/sk.js",
+	"./sk.js": "./node_modules/moment/locale/sk.js",
+	"./sl": "./node_modules/moment/locale/sl.js",
+	"./sl.js": "./node_modules/moment/locale/sl.js",
+	"./sq": "./node_modules/moment/locale/sq.js",
+	"./sq.js": "./node_modules/moment/locale/sq.js",
+	"./sr": "./node_modules/moment/locale/sr.js",
+	"./sr-cyrl": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr-cyrl.js": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr.js": "./node_modules/moment/locale/sr.js",
+	"./ss": "./node_modules/moment/locale/ss.js",
+	"./ss.js": "./node_modules/moment/locale/ss.js",
+	"./sv": "./node_modules/moment/locale/sv.js",
+	"./sv.js": "./node_modules/moment/locale/sv.js",
+	"./sw": "./node_modules/moment/locale/sw.js",
+	"./sw.js": "./node_modules/moment/locale/sw.js",
+	"./ta": "./node_modules/moment/locale/ta.js",
+	"./ta.js": "./node_modules/moment/locale/ta.js",
+	"./te": "./node_modules/moment/locale/te.js",
+	"./te.js": "./node_modules/moment/locale/te.js",
+	"./tet": "./node_modules/moment/locale/tet.js",
+	"./tet.js": "./node_modules/moment/locale/tet.js",
+	"./tg": "./node_modules/moment/locale/tg.js",
+	"./tg.js": "./node_modules/moment/locale/tg.js",
+	"./th": "./node_modules/moment/locale/th.js",
+	"./th.js": "./node_modules/moment/locale/th.js",
+	"./tl-ph": "./node_modules/moment/locale/tl-ph.js",
+	"./tl-ph.js": "./node_modules/moment/locale/tl-ph.js",
+	"./tlh": "./node_modules/moment/locale/tlh.js",
+	"./tlh.js": "./node_modules/moment/locale/tlh.js",
+	"./tr": "./node_modules/moment/locale/tr.js",
+	"./tr.js": "./node_modules/moment/locale/tr.js",
+	"./tzl": "./node_modules/moment/locale/tzl.js",
+	"./tzl.js": "./node_modules/moment/locale/tzl.js",
+	"./tzm": "./node_modules/moment/locale/tzm.js",
+	"./tzm-latn": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm-latn.js": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm.js": "./node_modules/moment/locale/tzm.js",
+	"./ug-cn": "./node_modules/moment/locale/ug-cn.js",
+	"./ug-cn.js": "./node_modules/moment/locale/ug-cn.js",
+	"./uk": "./node_modules/moment/locale/uk.js",
+	"./uk.js": "./node_modules/moment/locale/uk.js",
+	"./ur": "./node_modules/moment/locale/ur.js",
+	"./ur.js": "./node_modules/moment/locale/ur.js",
+	"./uz": "./node_modules/moment/locale/uz.js",
+	"./uz-latn": "./node_modules/moment/locale/uz-latn.js",
+	"./uz-latn.js": "./node_modules/moment/locale/uz-latn.js",
+	"./uz.js": "./node_modules/moment/locale/uz.js",
+	"./vi": "./node_modules/moment/locale/vi.js",
+	"./vi.js": "./node_modules/moment/locale/vi.js",
+	"./x-pseudo": "./node_modules/moment/locale/x-pseudo.js",
+	"./x-pseudo.js": "./node_modules/moment/locale/x-pseudo.js",
+	"./yo": "./node_modules/moment/locale/yo.js",
+	"./yo.js": "./node_modules/moment/locale/yo.js",
+	"./zh-cn": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-cn.js": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-hk": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-hk.js": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-tw": "./node_modules/moment/locale/zh-tw.js",
+	"./zh-tw.js": "./node_modules/moment/locale/zh-tw.js"
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "./node_modules/moment/locale recursive ^\\.\\/.*$";
 
 /***/ }),
 

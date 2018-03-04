@@ -11,10 +11,12 @@ var router_1 = require("@angular/router");
 var shop_component_1 = require("./shop/shop.component");
 var checkout_component_1 = require("./checkout/checkout.component");
 var login_component_1 = require("./login/login.component");
+var product_component_1 = require("./shop/product.component");
 var routes = [
     { path: '', component: shop_component_1.ShopComponent },
     { path: 'checkout', component: checkout_component_1.CheckoutComponent },
-    { path: 'login', component: login_component_1.LoginComponent }
+    { path: 'login', component: login_component_1.LoginComponent },
+    { path: 'product', component: product_component_1.ProductComponent }
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {

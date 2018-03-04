@@ -1,0 +1,77 @@
+﻿<p>
+    product works!
+</p>
+
+<form #form="ngForm" (submit)="submitForm(form)" class="form-horizontal" novalidate>
+    <p>
+        <button class="btn btn-primary" type="submit"
+                [disabled]="form.$pristine || form.$invalid" [faIcon]="'fa-save'">
+            存檔
+        </button>
+        <button class="btn btn-danger" type="button" (click)="confirmDelete('請確認是否刪除')" [faIcon]="'fa-trash'">
+            刪除 <!-- 同一段 html 不可以有兩個 directives，這裡已經使用 confirmComponent 因此就不能使用 iconComponent -->
+        </button>
+        <button class="btn btn-warning" (click)="cancel(form)" type="button" [faIcon]="'fa-undo'">
+            取消
+        </button>
+    </p>
+    <div class="row">
+        <form-group [width]="4" [controlVariable]="id" [required]="true">
+            <label class="control-label col-sm-6" for="id">Id</label>
+            <div class="col-sm-6">
+                <input type="number" id="id" name="Id" class="form-control"
+                       #id="ngModel" required
+                       [(ngModel)]="model.Id" />
+                <validate-span [controlVariable]="id"></validate-span>
+            </div>
+        </form-group>
+        <form-group [width]="4" [controlVariable]="title" [required]="false">
+            <label class="control-label col-sm-6" for="title">Title</label>
+            <div class="col-sm-6">
+                <input type="text" id="title" name="Title" class="form-control"
+                       #title="ngModel"
+                       [(ngModel)]="model.Title" />
+                <validate-span [controlVariable]="title"></validate-span>
+            </div>
+        </form-group>
+        <form-group [width]="4" [controlVariable]="price" [required]="false">
+            <label class="control-label col-sm-6" for="price">Price</label>
+            <div class="col-sm-6">
+                <input type="number" id="price" name="Price" class="form-control"
+                       #price="ngModel"
+                       [(ngModel)]="model.Price" />
+                <validate-span [controlVariable]="price"></validate-span>
+            </div>
+        </form-group>
+    </div>
+    <div class="row">
+        <form-group [width]="4" [controlVariable]="importDate" [required]="false">
+            <label class="control-label col-sm-6" for="importDate">ImportDate</label>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <input id="importDate" name="ImportDate" class="form-control" type="text"
+                           #importDate="ngModel" bsDatepicker #dpImportDate="bsDatepicker"
+                           [ngModel]="model.ImportDate" (ngModelChange)="model.ImportDate = dateFormat($event)" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" (click)="dpImportDate.toggle()"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+                <validate-span [controlVariable]="importDate"></validate-span>
+            </div>
+        </form-group>
+        <form-group [width]="4" [controlVariable]="exportDate" [required]="false">
+            <label class="control-label col-sm-6" for="exportDate">ExportDate</label>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <input id="exportDate" name="ExportDate" class="form-control" type="text"
+                           #exportDate="ngModel" bsDatepicker #dpExportDate="bsDatepicker"
+                           [ngModel]="model.ExportDate" (ngModelChange)="model.ExportDate = dateFormat($event)" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" (click)="dpExportDate.toggle()"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+                <validate-span [controlVariable]="exportDate"></validate-span>
+            </div>
+        </form-group>
+    </div>
+</form>

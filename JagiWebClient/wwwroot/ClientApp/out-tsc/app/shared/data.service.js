@@ -39,7 +39,8 @@ var DataService = /** @class */ (function () {
     };
     DataService.prototype.checkout = function () {
         var _this = this;
-        return this.http.post("api/Products", this.order)
+        var header = new http_1.HttpHeaders().set("Authorization", "Bearer " + this.token);
+        return this.http.post("api/Products", this.order, { headers: header })
             .map(function (response) {
             _this.order = new Order_1.Order();
             return true;

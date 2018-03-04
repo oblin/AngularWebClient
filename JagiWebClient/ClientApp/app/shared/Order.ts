@@ -21,6 +21,8 @@ export class OrderItem {
 
 export class Product {
     public Id: number;
+    public ImportDate: string;
+    public ExportDate: string;
     public Title: string;
     public Price: number;
 }
