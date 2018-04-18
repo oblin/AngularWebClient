@@ -75,18 +75,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var globals_service_1 = __webpack_require__("./ClientApp/app/core/globals.service.ts");
 var AppComponent = /** @class */ (function () {
-    function AppComponent() {
+    function AppComponent(global, elementRef) {
+        this.global = global;
+        this.elementRef = elementRef;
         this.title = 'Jagi Web Client �d���I';
     }
+    AppComponent.prototype.ngOnInit = function () {
+        var value = this.elementRef.nativeElement.getAttribute('model');
+        this.global.razorModel = value;
+    };
     AppComponent = __decorate([
         core_1.Component({
             selector: 'app-root',
             template: __webpack_require__("./ClientApp/app/app.component.html"),
             styles: []
-        })
+        }),
+        __metadata("design:paramtypes", [globals_service_1.Globals, core_1.ElementRef])
     ], AppComponent);
     return AppComponent;
 }());
@@ -114,6 +125,7 @@ var http_1 = __webpack_require__("./node_modules/@angular/common/esm5/http.js");
 var platform_browser_1 = __webpack_require__("./node_modules/@angular/platform-browser/esm5/platform-browser.js");
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+// ngx-bootstraps
 var modal_1 = __webpack_require__("./node_modules/ngx-bootstrap/modal/index.js");
 var datepicker_1 = __webpack_require__("./node_modules/ngx-bootstrap/datepicker/index.js");
 var tooltip_1 = __webpack_require__("./node_modules/ngx-bootstrap/tooltip/index.js");
@@ -316,7 +328,6 @@ var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var FaIconDirective = /** @class */ (function () {
     function FaIconDirective(el) {
         this.el = el;
-        el.nativeElement.innerHtml = "<i class='fa " + this.faIcon + "'></i>";
     }
     FaIconDirective.prototype.ngOnInit = function () {
         this.el.nativeElement.innerHTML += "<i class='fa " + this.faIcon + "'></i>";
@@ -417,6 +428,16 @@ var Globals = /** @class */ (function () {
     function Globals() {
         this.dateFormat = "YYYY/MM/DD";
     }
+    Object.defineProperty(Globals.prototype, "razorModel", {
+        get: function () {
+            return this.model;
+        },
+        set: function (data) {
+            this.model = data;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Globals.prototype.dateFormatter = function (s) {
         if (s == null)
             return "";
@@ -825,7 +846,7 @@ exports.ProductListComponent = ProductListComponent;
 /***/ "./ClientApp/app/shop/product.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<p>\r\n    product works!\r\n</p>\r\n\r\n<form #form=\"ngForm\" (submit)=\"submitForm(form)\" class=\"form-horizontal\" novalidate>\r\n    <p>\r\n        <button class=\"btn btn-primary\" type=\"submit\"\r\n                [disabled]=\"form.$pristine || form.$invalid\" [faIcon]=\"'fa-save'\">\r\n            存檔\r\n        </button>\r\n        <button class=\"btn btn-danger\" type=\"button\" (click)=\"confirmDelete('請確認是否刪除')\" [faIcon]=\"'fa-trash'\">\r\n            刪除 <!-- 同一段 html 不可以有兩個 directives，這裡已經使用 confirmComponent 因此就不能使用 iconComponent -->\r\n        </button>\r\n        <button class=\"btn btn-warning\" (click)=\"cancel(form)\" type=\"button\" [faIcon]=\"'fa-undo'\">\r\n            取消\r\n        </button>\r\n    </p>\r\n    <div class=\"row\">\r\n        <form-group [width]=\"4\" [controlVariable]=\"id\" [required]=\"true\">\r\n            <label class=\"control-label col-sm-6\" for=\"id\">Id</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"number\" id=\"id\" name=\"Id\" class=\"form-control\"\r\n                       #id=\"ngModel\" required\r\n                       [(ngModel)]=\"model.Id\" />\r\n                <validate-span [controlVariable]=\"id\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"title\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"title\">Title</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"text\" id=\"title\" name=\"Title\" class=\"form-control\"\r\n                       #title=\"ngModel\"\r\n                       [(ngModel)]=\"model.Title\" />\r\n                <validate-span [controlVariable]=\"title\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"price\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"price\">Price</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"number\" id=\"price\" name=\"Price\" class=\"form-control\"\r\n                       #price=\"ngModel\"\r\n                       [(ngModel)]=\"model.Price\" />\r\n                <validate-span [controlVariable]=\"price\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n    </div>\r\n    <div class=\"row\">\r\n        <form-group [width]=\"4\" [controlVariable]=\"importDate\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"importDate\">ImportDate</label>\r\n            <div class=\"col-sm-6\">\r\n                <div class=\"input-group\">\r\n                    <input id=\"importDate\" name=\"ImportDate\" class=\"form-control\" type=\"text\"\r\n                           #importDate=\"ngModel\" bsDatepicker #dpImportDate=\"bsDatepicker\"\r\n                           [ngModel]=\"model.ImportDate\" (ngModelChange)=\"model.ImportDate = dateFormat($event)\" />\r\n                    <span class=\"input-group-btn\">\r\n                        <button type=\"button\" class=\"btn btn-default\" (click)=\"dpImportDate.toggle()\"><i class=\"glyphicon glyphicon-calendar\"></i></button>\r\n                    </span>\r\n                </div>\r\n                <validate-span [controlVariable]=\"importDate\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"exportDate\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"exportDate\">ExportDate</label>\r\n            <div class=\"col-sm-6\">\r\n                <div class=\"input-group\">\r\n                    <input id=\"exportDate\" name=\"ExportDate\" class=\"form-control\" type=\"text\"\r\n                           #exportDate=\"ngModel\" bsDatepicker #dpExportDate=\"bsDatepicker\"\r\n                           [ngModel]=\"model.ExportDate\" (ngModelChange)=\"model.ExportDate = dateFormat($event)\" />\r\n                    <span class=\"input-group-btn\">\r\n                        <button type=\"button\" class=\"btn btn-default\" (click)=\"dpExportDate.toggle()\"><i class=\"glyphicon glyphicon-calendar\"></i></button>\r\n                    </span>\r\n                </div>\r\n                <validate-span [controlVariable]=\"exportDate\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n    </div>\r\n</form>\r\n"
+module.exports = "<p>\r\n    {{ testModel | json }}\r\n</p>\r\n\r\n<form #form=\"ngForm\" (submit)=\"submitForm(form)\" class=\"form-horizontal\" novalidate>\r\n    <p>\r\n        <button class=\"btn btn-primary\" type=\"submit\"\r\n                [disabled]=\"form.$pristine || form.$invalid\" [faIcon]=\"'fa-save'\">\r\n            存檔\r\n        </button>\r\n        <button class=\"btn btn-danger\" type=\"button\" (click)=\"confirmDelete('請確認是否刪除')\" [faIcon]=\"'fa-trash'\">\r\n            刪除 <!-- 同一段 html 不可以有兩個 directives，這裡已經使用 confirmComponent 因此就不能使用 iconComponent -->\r\n        </button>\r\n        <button class=\"btn btn-warning\" (click)=\"cancelForm()\" type=\"button\" [faIcon]=\"'fa-undo'\">\r\n            取消\r\n        </button>\r\n    </p>\r\n    <div class=\"row\">\r\n        <form-group [width]=\"4\" [controlVariable]=\"id\" [required]=\"true\">\r\n            <label class=\"control-label col-sm-6\" for=\"id\">Id</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"number\" id=\"id\" name=\"Id\" class=\"form-control\"\r\n                       #id=\"ngModel\" required\r\n                       [(ngModel)]=\"model.Id\" />\r\n                <validate-span [controlVariable]=\"id\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"title\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"title\">Title</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"text\" id=\"title\" name=\"Title\" class=\"form-control\"\r\n                       #title=\"ngModel\"\r\n                       [(ngModel)]=\"model.Title\" />\r\n                <validate-span [controlVariable]=\"title\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"price\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"price\">Price</label>\r\n            <div class=\"col-sm-6\">\r\n                <input type=\"number\" id=\"price\" name=\"Price\" class=\"form-control\"\r\n                       #price=\"ngModel\"\r\n                       [(ngModel)]=\"model.Price\" />\r\n                <validate-span [controlVariable]=\"price\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n    </div>\r\n    <div class=\"row\">\r\n        <form-group [width]=\"4\" [controlVariable]=\"importDate\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"importDate\">ImportDate</label>\r\n            <div class=\"col-sm-6\">\r\n                <div class=\"input-group\">\r\n                    <input id=\"importDate\" name=\"ImportDate\" class=\"form-control\" type=\"text\"\r\n                           #importDate=\"ngModel\" bsDatepicker #dpImportDate=\"bsDatepicker\"\r\n                           [ngModel]=\"model.ImportDate\" (ngModelChange)=\"model.ImportDate = dateFormat($event)\" />\r\n                    <span class=\"input-group-btn\">\r\n                        <button type=\"button\" class=\"btn btn-default\" (click)=\"dpImportDate.toggle()\"><i class=\"glyphicon glyphicon-calendar\"></i></button>\r\n                    </span>\r\n                </div>\r\n                <validate-span [controlVariable]=\"importDate\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n        <form-group [width]=\"4\" [controlVariable]=\"exportDate\" [required]=\"false\">\r\n            <label class=\"control-label col-sm-6\" for=\"exportDate\">ExportDate</label>\r\n            <div class=\"col-sm-6\">\r\n                <div class=\"input-group\">\r\n                    <input id=\"exportDate\" name=\"ExportDate\" class=\"form-control\" type=\"text\"\r\n                           #exportDate=\"ngModel\" bsDatepicker #dpExportDate=\"bsDatepicker\"\r\n                           [ngModel]=\"model.ExportDate\" (ngModelChange)=\"model.ExportDate = dateFormat($event)\" />\r\n                    <span class=\"input-group-btn\">\r\n                        <button type=\"button\" class=\"btn btn-default\" (click)=\"dpExportDate.toggle()\"><i class=\"glyphicon glyphicon-calendar\"></i></button>\r\n                    </span>\r\n                </div>\r\n                <validate-span [controlVariable]=\"exportDate\"></validate-span>\r\n            </div>\r\n        </form-group>\r\n    </div>\r\n</form>\r\n"
 
 /***/ }),
 
@@ -849,13 +870,16 @@ var Order_1 = __webpack_require__("./ClientApp/app/shared/Order.ts");
 var modal_1 = __webpack_require__("./node_modules/ngx-bootstrap/modal/index.js");
 var confirm_component_1 = __webpack_require__("./ClientApp/app/core/confirm.component.ts");
 var globals_service_1 = __webpack_require__("./ClientApp/app/core/globals.service.ts");
+var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
 var ProductComponent = /** @class */ (function () {
-    function ProductComponent(modalService, globals) {
+    function ProductComponent(modalService, globals, router) {
         this.modalService = modalService;
         this.globals = globals;
+        this.router = router;
     }
     ProductComponent.prototype.ngOnInit = function () {
         this.model = new Order_1.Product();
+        this.testModel = this.globals.razorModel;
     };
     ProductComponent.prototype.deleting = function () {
         alert("Call deleting function");
@@ -880,13 +904,17 @@ var ProductComponent = /** @class */ (function () {
             alert(JSON.stringify(this.model));
         }
     };
+    ProductComponent.prototype.cancelForm = function () {
+        this.router.navigate([""]);
+    };
     ProductComponent = __decorate([
         core_1.Component({
             selector: 'product',
             template: __webpack_require__("./ClientApp/app/shop/product.component.html"),
             styles: []
         }),
-        __metadata("design:paramtypes", [modal_1.BsModalService, globals_service_1.Globals])
+        __metadata("design:paramtypes", [modal_1.BsModalService,
+            globals_service_1.Globals, router_1.Router])
     ], ProductComponent);
     return ProductComponent;
 }());

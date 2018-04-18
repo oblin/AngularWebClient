@@ -1,5 +1,5 @@
 ﻿<p>
-    product works!
+    {{ testModel | json }}
 </p>
 
 <form #form="ngForm" (submit)="submitForm(form)" class="form-horizontal" novalidate>
@@ -11,7 +11,7 @@
         <button class="btn btn-danger" type="button" (click)="confirmDelete('請確認是否刪除')" [faIcon]="'fa-trash'">
             刪除 <!-- 同一段 html 不可以有兩個 directives，這裡已經使用 confirmComponent 因此就不能使用 iconComponent -->
         </button>
-        <button class="btn btn-warning" (click)="cancel(form)" type="button" [faIcon]="'fa-undo'">
+        <button class="btn btn-warning" (click)="cancelForm()" type="button" [faIcon]="'fa-undo'">
             取消
         </button>
     </p>

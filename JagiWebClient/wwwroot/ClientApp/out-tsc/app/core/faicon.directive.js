@@ -10,26 +10,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var globals_service_1 = require("./core/globals.service");
-var AppComponent = /** @class */ (function () {
-    function AppComponent(global, elementRef) {
-        this.global = global;
-        this.elementRef = elementRef;
-        this.title = 'Jagi Web Client �d���I';
+var FaIconDirective = /** @class */ (function () {
+    function FaIconDirective(el) {
+        this.el = el;
     }
-    AppComponent.prototype.ngOnInit = function () {
-        var value = this.elementRef.nativeElement.getAttribute('model');
-        this.global.razorModel = value;
+    FaIconDirective.prototype.ngOnInit = function () {
+        this.el.nativeElement.innerHTML += "<i class='fa " + this.faIcon + "'></i>";
     };
-    AppComponent = __decorate([
-        core_1.Component({
-            selector: 'app-root',
-            templateUrl: './app.component.html',
-            styles: []
+    __decorate([
+        core_1.Input('faIcon'),
+        __metadata("design:type", String)
+    ], FaIconDirective.prototype, "faIcon", void 0);
+    FaIconDirective = __decorate([
+        core_1.Directive({
+            selector: '[faIcon]'
         }),
-        __metadata("design:paramtypes", [globals_service_1.Globals, core_1.ElementRef])
-    ], AppComponent);
-    return AppComponent;
+        __metadata("design:paramtypes", [core_1.ElementRef])
+    ], FaIconDirective);
+    return FaIconDirective;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.FaIconDirective = FaIconDirective;
+//# sourceMappingURL=faicon.directive.js.map

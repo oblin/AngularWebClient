@@ -10,26 +10,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var globals_service_1 = require("./core/globals.service");
-var AppComponent = /** @class */ (function () {
-    function AppComponent(global, elementRef) {
-        this.global = global;
-        this.elementRef = elementRef;
-        this.title = 'Jagi Web Client �d���I';
+var forms_1 = require("@angular/forms");
+var ValidateSpanComponent = /** @class */ (function () {
+    function ValidateSpanComponent() {
     }
-    AppComponent.prototype.ngOnInit = function () {
-        var value = this.elementRef.nativeElement.getAttribute('model');
-        this.global.razorModel = value;
-    };
-    AppComponent = __decorate([
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", forms_1.AbstractControlDirective)
+    ], ValidateSpanComponent.prototype, "controlVariable", void 0);
+    ValidateSpanComponent = __decorate([
         core_1.Component({
-            selector: 'app-root',
-            templateUrl: './app.component.html',
-            styles: []
-        }),
-        __metadata("design:paramtypes", [globals_service_1.Globals, core_1.ElementRef])
-    ], AppComponent);
-    return AppComponent;
+            selector: 'validate-span',
+            templateUrl: './validate-span.component.html',
+            styles: ['[hidden] { display: none !important; }']
+        })
+    ], ValidateSpanComponent);
+    return ValidateSpanComponent;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.ValidateSpanComponent = ValidateSpanComponent;
+//# sourceMappingURL=validate-span.component.js.map

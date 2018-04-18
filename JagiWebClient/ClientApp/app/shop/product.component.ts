@@ -1,9 +1,10 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ElementRef, ViewChild } from '@angular/core';
 import { Product } from '../shared/Order';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ConfirmComponent } from '../core/confirm.component';
 import { Globals } from '../core/globals.service';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'product',
@@ -12,10 +13,13 @@ import { NgForm } from '@angular/forms';
 })
 export class ProductComponent implements OnInit {
     private model: Product;
-    constructor(private modalService: BsModalService, private globals: Globals) { }
+    private testModel: any;
+    constructor(private modalService: BsModalService,
+        private globals: Globals, private router: Router) { }
 
     ngOnInit() {
         this.model = new Product();
+        this.testModel = this.globals.razorModel;
     }
 
     deleting() {
@@ -45,5 +49,9 @@ export class ProductComponent implements OnInit {
         if (form.valid) {
             alert(JSON.stringify(this.model));
         }
+    }
+
+    cancelForm() {
+        this.router.navigate([""]);
     }
 }

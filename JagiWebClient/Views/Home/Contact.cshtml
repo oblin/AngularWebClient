@@ -1,6 +1,14 @@
-﻿@{
+﻿@model JagiWebClient.Models.Product
+@{
     ViewData["Title"] = "Contact";
 }
+@*<base href="/Home/Contact/" />*@
+
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<app-root model='@Json.Serialize(Model)'>
+</app-root>
 
 @section Scripts {
     <script src="~/ClientApp/dist/inline.bundle.js"></script>
@@ -9,10 +17,3 @@
     <script src="~/ClientApp/dist/vendor.bundle.js"></script>
     <script src="~/ClientApp/dist/main.bundle.js"></script>
 }
-
-<base href="/" />
-
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
-
-<app-root></app-root>

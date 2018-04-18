@@ -10,26 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var globals_service_1 = require("./core/globals.service");
-var AppComponent = /** @class */ (function () {
-    function AppComponent(global, elementRef) {
-        this.global = global;
-        this.elementRef = elementRef;
-        this.title = 'Jagi Web Client �d���I';
+var CodeService = /** @class */ (function () {
+    function CodeService() {
     }
-    AppComponent.prototype.ngOnInit = function () {
-        var value = this.elementRef.nativeElement.getAttribute('model');
-        this.global.razorModel = value;
-    };
-    AppComponent = __decorate([
-        core_1.Component({
-            selector: 'app-root',
-            templateUrl: './app.component.html',
-            styles: []
-        }),
-        __metadata("design:paramtypes", [globals_service_1.Globals, core_1.ElementRef])
-    ], AppComponent);
-    return AppComponent;
+    CodeService = __decorate([
+        core_1.Injectable(),
+        __metadata("design:paramtypes", [])
+    ], CodeService);
+    return CodeService;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.CodeService = CodeService;
+//# sourceMappingURL=code.service.js.map

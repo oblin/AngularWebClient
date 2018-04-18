@@ -25,8 +25,8 @@ namespace JagiWebClient.Controllers
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
-
-            return View();
+            var product = new Product { Id = 1, Title = "Test Product" };
+            return View(product);
         }
 
         public IActionResult Error()

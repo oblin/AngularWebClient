@@ -7,8 +7,6 @@ export class FaIconDirective {
     @Input('faIcon') faIcon: string;
 
     constructor(private el: ElementRef) {
-        el.nativeElement.innerHtml = `<i class='fa ${this.faIcon}'></i>`;
-        
     }
 
     ngOnInit() {
